@@ -1,8 +1,7 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class ttable
+Partial Class TruthTableDemonstration
     Inherits System.Windows.Forms.Form
 
-    'Form overrides dispose to clean up the component list.
     <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
@@ -14,157 +13,216 @@ Partial Class ttable
         End Try
     End Sub
 
-    'Required by the Windows Form Designer
     Private components As System.ComponentModel.IContainer
 
-    'NOTE: The following procedure is required by the Windows Form Designer
-    'It can be modified using the Windows Form Designer.  
-    'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ttable))
-        DataGridView1 = New DataGridView()
-        Button1 = New Button()
-        CheckBox1 = New CheckBox()
-        CheckBox2 = New CheckBox()
-        GroupBox1 = New GroupBox()
-        Label2 = New Label()
-        Label3 = New Label()
-        Label1 = New Label()
-        Label4 = New Label()
-        CheckBox3 = New CheckBox()
-        CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
-        GroupBox1.SuspendLayout()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(TruthTableDemonstration))
+        dgvTruthTable = New DataGridView()
+        btnGenerate = New Button()
+        chkInputA = New CheckBox()
+        chkInputB = New CheckBox()
+        grpInteractive = New GroupBox()
+        lblXorResult = New Label()
+        lblOrResult = New Label()
+        lblAndResult = New Label()
+        lblNotResult = New Label()
+        pnlTitle = New Panel()
+        lblTitle = New Label()
+        lblSubtitle = New Label()
+        CType(dgvTruthTable, ComponentModel.ISupportInitialize).BeginInit()
+        grpInteractive.SuspendLayout()
+        pnlTitle.SuspendLayout()
         SuspendLayout()
         ' 
-        ' DataGridView1
+        ' dgvTruthTable
         ' 
-        DataGridView1.BackgroundColor = SystemColors.ButtonHighlight
-        DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridView1.Dock = DockStyle.Fill
-        DataGridView1.Location = New Point(0, 0)
-        DataGridView1.Name = "DataGridView1"
-        DataGridView1.Size = New Size(800, 450)
-        DataGridView1.TabIndex = 0
+        dgvTruthTable.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        dgvTruthTable.BackgroundColor = SystemColors.ButtonHighlight
+        dgvTruthTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        dgvTruthTable.Location = New Point(12, 130)
+        dgvTruthTable.Name = "dgvTruthTable"
+        dgvTruthTable.Size = New Size(560, 300)
+        dgvTruthTable.TabIndex = 0
         ' 
-        ' Button1
+        ' btnGenerate
         ' 
-        Button1.Font = New Font("Constantia", 12.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        Button1.Location = New Point(64, 372)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(208, 39)
-        Button1.TabIndex = 1
-        Button1.Text = "Generate Truth Table"
-        Button1.UseVisualStyleBackColor = True
+        btnGenerate.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        btnGenerate.BackColor = Color.FromArgb(CByte(70), CByte(130), CByte(180))
+        btnGenerate.FlatStyle = FlatStyle.Flat
+        btnGenerate.Font = New Font("Segoe UI", 11.0F, FontStyle.Bold, GraphicsUnit.Point)
+        btnGenerate.ForeColor = Color.White
+        btnGenerate.Location = New Point(12, 445)
+        btnGenerate.Name = "btnGenerate"
+        btnGenerate.Size = New Size(200, 45)
+        btnGenerate.TabIndex = 1
+        btnGenerate.Text = "🔄 Regenerate Table"
+        btnGenerate.UseVisualStyleBackColor = False
         ' 
-        ' CheckBox1
+        ' chkInputA
         ' 
-        CheckBox1.AutoSize = True
-        CheckBox1.Location = New Point(29, -41)
-        CheckBox1.Name = "CheckBox1"
-        CheckBox1.Size = New Size(89, 19)
-        CheckBox1.TabIndex = 2
-        CheckBox1.Text = "CheckBox A"
-        CheckBox1.UseVisualStyleBackColor = True
+        chkInputA.AutoSize = True
+        chkInputA.Font = New Font("Segoe UI", 10.0F, FontStyle.Regular, GraphicsUnit.Point)
+        chkInputA.Location = New Point(20, 35)
+        chkInputA.Name = "chkInputA"
+        chkInputA.Size = New Size(73, 23)
+        chkInputA.TabIndex = 2
+        chkInputA.Text = "Input A"
+        chkInputA.UseVisualStyleBackColor = True
         ' 
-        ' CheckBox2
+        ' chkInputB
         ' 
-        CheckBox2.AutoSize = True
-        CheckBox2.Location = New Point(144, 24)
-        CheckBox2.Name = "CheckBox2"
-        CheckBox2.Size = New Size(88, 19)
-        CheckBox2.TabIndex = 3
-        CheckBox2.Text = "CheckBox B"
-        CheckBox2.UseVisualStyleBackColor = True
+        chkInputB.AutoSize = True
+        chkInputB.Font = New Font("Segoe UI", 10.0F, FontStyle.Regular, GraphicsUnit.Point)
+        chkInputB.Location = New Point(20, 65)
+        chkInputB.Name = "chkInputB"
+        chkInputB.Size = New Size(72, 23)
+        chkInputB.TabIndex = 3
+        chkInputB.Text = "Input B"
+        chkInputB.UseVisualStyleBackColor = True
         ' 
-        ' GroupBox1
+        ' grpInteractive
         ' 
-        GroupBox1.Controls.Add(Label2)
-        GroupBox1.Controls.Add(Label3)
-        GroupBox1.Controls.Add(Label1)
-        GroupBox1.Controls.Add(Label4)
-        GroupBox1.Controls.Add(CheckBox3)
-        GroupBox1.Controls.Add(CheckBox2)
-        GroupBox1.Controls.Add(CheckBox1)
-        GroupBox1.Location = New Point(516, 270)
-        GroupBox1.Name = "GroupBox1"
-        GroupBox1.Size = New Size(284, 180)
-        GroupBox1.TabIndex = 4
-        GroupBox1.TabStop = False
-        GroupBox1.Text = "GroupBox1"
+        grpInteractive.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        grpInteractive.BackColor = Color.FromArgb(CByte(240), CByte(240), CByte(240))
+        grpInteractive.Controls.Add(lblXorResult)
+        grpInteractive.Controls.Add(lblOrResult)
+        grpInteractive.Controls.Add(lblAndResult)
+        grpInteractive.Controls.Add(lblNotResult)
+        grpInteractive.Controls.Add(chkInputB)
+        grpInteractive.Controls.Add(chkInputA)
+        grpInteractive.Font = New Font("Segoe UI", 10.0F, FontStyle.Bold, GraphicsUnit.Point)
+        grpInteractive.ForeColor = Color.FromArgb(CByte(70), CByte(130), CByte(180))
+        grpInteractive.Location = New Point(590, 130)
+        grpInteractive.Name = "grpInteractive"
+        grpInteractive.Padding = New Padding(10)
+        grpInteractive.Size = New Size(350, 300)
+        grpInteractive.TabIndex = 4
+        grpInteractive.TabStop = False
+        grpInteractive.Text = "Interactive Boolean Logic Tester"
         ' 
-        ' Label2
+        ' lblXorResult
         ' 
-        Label2.AutoSize = True
-        Label2.Location = New Point(26, 85)
-        Label2.Name = "Label2"
-        Label2.Size = New Size(32, 15)
-        Label2.TabIndex = 6
-        Label2.Text = "AND"
+        lblXorResult.AutoSize = False
+        lblXorResult.BackColor = Color.FromArgb(CByte(50), CByte(50), CByte(50))
+        lblXorResult.Font = New Font("Consolas", 10.0F, FontStyle.Bold, GraphicsUnit.Point)
+        lblXorResult.ForeColor = Color.White
+        lblXorResult.Location = New Point(20, 220)
+        lblXorResult.Name = "lblXorResult"
+        lblXorResult.Padding = New Padding(5)
+        lblXorResult.Size = New Size(310, 35)
+        lblXorResult.TabIndex = 8
+        lblXorResult.Text = "A XOR B = FALSE"
+        lblXorResult.TextAlign = ContentAlignment.MiddleLeft
         ' 
-        ' Label3
+        ' lblOrResult
         ' 
-        Label3.AutoSize = True
-        Label3.Location = New Point(35, 100)
-        Label3.Name = "Label3"
-        Label3.Size = New Size(23, 15)
-        Label3.TabIndex = 7
-        Label3.Text = "OR"
+        lblOrResult.AutoSize = False
+        lblOrResult.BackColor = Color.FromArgb(CByte(50), CByte(50), CByte(50))
+        lblOrResult.Font = New Font("Consolas", 10.0F, FontStyle.Bold, GraphicsUnit.Point)
+        lblOrResult.ForeColor = Color.White
+        lblOrResult.Location = New Point(20, 175)
+        lblOrResult.Name = "lblOrResult"
+        lblOrResult.Padding = New Padding(5)
+        lblOrResult.Size = New Size(310, 35)
+        lblOrResult.TabIndex = 7
+        lblOrResult.Text = "A OR B = FALSE"
+        lblOrResult.TextAlign = ContentAlignment.MiddleLeft
         ' 
-        ' Label1
+        ' lblAndResult
         ' 
-        Label1.AutoSize = True
-        Label1.Location = New Point(19, 70)
-        Label1.Name = "Label1"
-        Label1.Size = New Size(42, 15)
-        Label1.TabIndex = 5
-        Label1.Text = "NOT A"
+        lblAndResult.AutoSize = False
+        lblAndResult.BackColor = Color.FromArgb(CByte(50), CByte(50), CByte(50))
+        lblAndResult.Font = New Font("Consolas", 10.0F, FontStyle.Bold, GraphicsUnit.Point)
+        lblAndResult.ForeColor = Color.White
+        lblAndResult.Location = New Point(20, 130)
+        lblAndResult.Name = "lblAndResult"
+        lblAndResult.Padding = New Padding(5)
+        lblAndResult.Size = New Size(310, 35)
+        lblAndResult.TabIndex = 6
+        lblAndResult.Text = "A AND B = FALSE"
+        lblAndResult.TextAlign = ContentAlignment.MiddleLeft
         ' 
-        ' Label4
+        ' lblNotResult
         ' 
-        Label4.AutoSize = True
-        Label4.Location = New Point(26, 115)
-        Label4.Name = "Label4"
-        Label4.Size = New Size(30, 15)
-        Label4.TabIndex = 8
-        Label4.Text = "XOR"
+        lblNotResult.AutoSize = False
+        lblNotResult.BackColor = Color.FromArgb(CByte(50), CByte(50), CByte(50))
+        lblNotResult.Font = New Font("Consolas", 10.0F, FontStyle.Bold, GraphicsUnit.Point)
+        lblNotResult.ForeColor = Color.White
+        lblNotResult.Location = New Point(20, 95)
+        lblNotResult.Name = "lblNotResult"
+        lblNotResult.Padding = New Padding(5)
+        lblNotResult.Size = New Size(310, 35)
+        lblNotResult.TabIndex = 5
+        lblNotResult.Text = "NOT A = TRUE"
+        lblNotResult.TextAlign = ContentAlignment.MiddleLeft
         ' 
-        ' CheckBox3
+        ' pnlTitle
         ' 
-        CheckBox3.AutoSize = True
-        CheckBox3.Location = New Point(19, 24)
-        CheckBox3.Name = "CheckBox3"
-        CheckBox3.Size = New Size(89, 19)
-        CheckBox3.TabIndex = 4
-        CheckBox3.Text = "CheckBox A"
-        CheckBox3.UseVisualStyleBackColor = True
+        pnlTitle.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        pnlTitle.BackColor = Color.FromArgb(CByte(70), CByte(130), CByte(180))
+        pnlTitle.Controls.Add(lblTitle)
+        pnlTitle.Controls.Add(lblSubtitle)
+        pnlTitle.Location = New Point(0, 0)
+        pnlTitle.Name = "pnlTitle"
+        pnlTitle.Size = New Size(952, 115)
+        pnlTitle.TabIndex = 5
         ' 
-        ' TruthTable
+        ' lblTitle
+        ' 
+        lblTitle.AutoSize = True
+        lblTitle.Font = New Font("Segoe UI", 26.0F, FontStyle.Bold, GraphicsUnit.Point)
+        lblTitle.ForeColor = Color.White
+        lblTitle.Location = New Point(12, 15)
+        lblTitle.Name = "lblTitle"
+        lblTitle.Size = New Size(544, 47)
+        lblTitle.TabIndex = 0
+        lblTitle.Text = "Boolean Logic Truth Tables"
+        ' 
+        ' lblSubtitle
+        ' 
+        lblSubtitle.AutoSize = True
+        lblSubtitle.Font = New Font("Segoe UI", 11.0F, FontStyle.Regular, GraphicsUnit.Point)
+        lblSubtitle.ForeColor = Color.White
+        lblSubtitle.Location = New Point(15, 67)
+        lblSubtitle.Name = "lblSubtitle"
+        lblSubtitle.Size = New Size(652, 20)
+        lblSubtitle.TabIndex = 1
+        lblSubtitle.Text = "Explore logical operations: NOT, AND, OR, XOR | Toggle inputs to see real-time results"
+        ' 
+        ' TruthTableDemonstration
         ' 
         AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         BackgroundImage = CType(resources.GetObject("$this.BackgroundImage"), Image)
         BackgroundImageLayout = ImageLayout.Stretch
-        ClientSize = New Size(800, 450)
-        Controls.Add(GroupBox1)
-        Controls.Add(Button1)
-        Controls.Add(DataGridView1)
-        Name = "TruthTable"
-        Text = "TruthTable"
-        CType(DataGridView1, ComponentModel.ISupportInitialize).EndInit()
-        GroupBox1.ResumeLayout(False)
-        GroupBox1.PerformLayout()
+        ClientSize = New Size(952, 505)
+        Controls.Add(pnlTitle)
+        Controls.Add(grpInteractive)
+        Controls.Add(btnGenerate)
+        Controls.Add(dgvTruthTable)
+        MinimumSize = New Size(968, 544)
+        Name = "TruthTableDemonstration"
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "Boolean Logic - Truth Table Demonstration"
+        CType(dgvTruthTable, ComponentModel.ISupportInitialize).EndInit()
+        grpInteractive.ResumeLayout(False)
+        grpInteractive.PerformLayout()
+        pnlTitle.ResumeLayout(False)
+        pnlTitle.PerformLayout()
         ResumeLayout(False)
     End Sub
 
-    Friend WithEvents DataGridView1 As DataGridView
-    Friend WithEvents Button1 As Button
-    Friend WithEvents CheckBox1 As CheckBox
-    Friend WithEvents CheckBox2 As CheckBox
-    Friend WithEvents GroupBox1 As GroupBox
-    Friend WithEvents Label1 As Label
-    Friend WithEvents Label2 As Label
-    Friend WithEvents Label3 As Label
-    Friend WithEvents Label4 As Label
-    Friend WithEvents CheckBox3 As CheckBox
+    Friend WithEvents dgvTruthTable As DataGridView
+    Friend WithEvents btnGenerate As Button
+    Friend WithEvents chkInputA As CheckBox
+    Friend WithEvents chkInputB As CheckBox
+    Friend WithEvents grpInteractive As GroupBox
+    Friend WithEvents lblNotResult As Label
+    Friend WithEvents lblAndResult As Label
+    Friend WithEvents lblOrResult As Label
+    Friend WithEvents lblXorResult As Label
+    Friend WithEvents pnlTitle As Panel
+    Friend WithEvents lblTitle As Label
+    Friend WithEvents lblSubtitle As Label
 End Class
