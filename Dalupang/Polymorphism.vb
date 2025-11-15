@@ -1,173 +1,393 @@
-﻿''' <summary>
+﻿Imports System.Drawing
+Imports System.Windows.Forms
+
+''' <summary>
 ''' Polymorphism Educational Demonstration
-''' Interactive tool for learning polymorphic behavior in OOP
-''' Enterprise-grade implementation with design system integration
+''' Enterprise-grade OOP learning tool with professional UI/UX
 ''' </summary>
 Public Class Polymorphism
     Inherits Form
 
+#Region "Private Fields"
+
+    Private pnlHeader As Panel
+    Private pnlContent As Panel
+    Private pnlFooter As Panel
+    Private lblTitle As Label
+    Private lblDescription As Label
+    Private txtOutput As TextBox
+    Private btnRun As Button
+    Private btnClear As Button
+    Private pnlInstructions As Panel
+
+#End Region
+
+#Region "Constructor"
+
     Public Sub New()
         InitializeComponent()
+        InitializeEnterpriseUI()
     End Sub
+
+#End Region
+
+#Region "Form Initialization"
 
     Private Sub Polymorphism_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ApplyEnterpriseStyles()
-        DisplayInstructions()
+        DisplayWelcomeMessage()
     End Sub
 
-    Private Sub ApplyEnterpriseStyles()
+    Private Sub InitializeEnterpriseUI()
+        ' Apply enterprise design system
         Me.BackColor = EnterpriseDesignSystem.LightTheme.Background
         Me.Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body)
-        Me.StartPosition = AppConfiguration.UISettings.StartupPositionValue
 
+        ' Enable performance optimizations
         If AppConfiguration.Performance.EnableDoubleBuffering Then
             Me.DoubleBuffered = True
+            Me.SetStyle(ControlStyles.OptimizedDoubleBuffer Or
+               ControlStyles.AllPaintingInWmPaint Or
+             ControlStyles.UserPaint, True)
         End If
 
-        If TextBox1 IsNot Nothing Then
-            With TextBox1
-                .ReadOnly = True
-                .Multiline = True
-                .Font = EnterpriseDesignSystem.CreateMonospaceFont(EnterpriseDesignSystem.FontSizes.Body)
-                .BackColor = EnterpriseDesignSystem.LightTheme.Surface
-                .ForeColor = EnterpriseDesignSystem.LightTheme.TextPrimary
-            End With
-        End If
-
-        If Button1 IsNot Nothing Then
-            With Button1
-                .Text = "▶️ Run Demo"
-                .BackColor = EnterpriseDesignSystem.SemanticColors.Success
-                .ForeColor = EnterpriseDesignSystem.NeutralColors.White
-                .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body, FontStyle.Bold)
-                .FlatStyle = FlatStyle.Flat
-                .Size = EnterpriseDesignSystem.ControlSizes.ButtonMedium
-                .Cursor = Cursors.Hand
-            End With
-            Button1.FlatAppearance.BorderSize = 0
-
-            Dim originalColor = Button1.BackColor
-            AddHandler Button1.MouseEnter, Sub(s, e)
-                                               Button1.BackColor = ControlPaint.Light(originalColor, 0.1F)
-                                           End Sub
-            AddHandler Button1.MouseLeave, Sub(s, e)
-                                               Button1.BackColor = originalColor
-                                           End Sub
-        End If
+        CreateHeader()
+        CreateInstructions()
+        CreateOutputArea()
+        CreateButtons()
+        CreateFooter()
     End Sub
 
-    Private Sub DisplayInstructions()
-        TextBox1.Text = "═══════════════════════════════════════" & vbCrLf &
-    "📚 POLYMORPHISM DEMONSTRATION" & vbCrLf &
-         "═══════════════════════════════════════" & vbCrLf & vbCrLf &
-       "Polymorphism allows objects of different types to be" & vbCrLf &
-     "treated through a common base type." & vbCrLf & vbCrLf &
-       "Example: call Speak() on an Animal reference that" & vbCrLf &
-     "points to different derived types (Dog, Cat, Bird)." & vbCrLf & vbCrLf &
-     "Click the button to run the demo and append results below." & vbCrLf & vbCrLf &
-              "💡 Key Concept: Same interface, different behavior!"
+    Private Sub CreateHeader()
+        ' Header panel
+        pnlHeader = New Panel With {
+               .Dock = DockStyle.Top,
+               .Height = 100,
+             .BackColor = EnterpriseDesignSystem.ModuleColors.OOP,
+               .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.Large)
+           }
+
+        ' Title label
+        lblTitle = New Label With {
+    .Text = "🔄 Polymorphism Demonstration",
+      .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Hero, FontStyle.Bold),
+        .ForeColor = EnterpriseDesignSystem.NeutralColors.White,
+            .AutoSize = True,
+            .Location = New Point(EnterpriseDesignSystem.Spacing.Large, EnterpriseDesignSystem.Spacing.Large)
+      }
+
+        ' Description label
+        lblDescription = New Label With {
+        .Text = "Learn how objects of different types respond to the same method calls",
+   .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
+        .ForeColor = ColorHelper.Lighten(EnterpriseDesignSystem.NeutralColors.White, 0.2),
+            .AutoSize = True,
+     .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 55)
+        }
+
+        pnlHeader.Controls.AddRange({lblTitle, lblDescription})
+        Me.Controls.Add(pnlHeader)
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Private Sub CreateInstructions()
+        ' Instructions panel with proper spacing
+        pnlInstructions = New Panel With {
+              .Dock = DockStyle.Top,
+     .Height = 150,
+           .BackColor = EnterpriseDesignSystem.LightTheme.Surface,
+              .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
+          }
+
+        Dim lblInstructionsTitle = New Label With {
+        .Text = "💡 What is Polymorphism?",
+            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.H3, FontStyle.Bold),
+    .ForeColor = EnterpriseDesignSystem.LightTheme.TextPrimary,
+     .Dock = DockStyle.Top,
+    .Height = 30
+ }
+
+        Dim lblInstructionsText = New Label With {
+                 .Text = "Polymorphism allows objects of different types to be treated through a common base type." & vbCrLf & vbCrLf &
+                   "Example: Call Speak() on an Animal reference that points to Dog, Cat, or Bird objects." & vbCrLf &
+                   "Each type responds differently, demonstrating polymorphic behavior.",
+                 .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
+                 .ForeColor = EnterpriseDesignSystem.LightTheme.TextSecondary,
+           .Dock = DockStyle.Fill,
+                 .AutoSize = False
+           }
+
+        pnlInstructions.Controls.AddRange({lblInstructionsText, lblInstructionsTitle})
+        Me.Controls.Add(pnlInstructions)
+    End Sub
+
+    Private Sub CreateOutputArea()
+        ' Content panel
+        pnlContent = New Panel With {
+      .Dock = DockStyle.Fill,
+            .BackColor = EnterpriseDesignSystem.LightTheme.Background,
+            .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
+ }
+
+        ' Output text box with professional styling
+        txtOutput = New TextBox With {
+.Multiline = True,
+            .ScrollBars = ScrollBars.Vertical,
+       .ReadOnly = True,
+       .Dock = DockStyle.Fill,
+        .Font = EnterpriseDesignSystem.CreateMonospaceFont(EnterpriseDesignSystem.FontSizes.Body),
+            .BackColor = EnterpriseDesignSystem.LightTheme.Surface,
+  .ForeColor = EnterpriseDesignSystem.LightTheme.TextPrimary,
+     .BorderStyle = BorderStyle.None,
+  .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.Large)
+        }
+
+        ' Add subtle border effect using a panel
+        Dim pnlTextBoxBorder = New Panel With {
+                   .Dock = DockStyle.Fill,
+                   .BackColor = EnterpriseDesignSystem.LightTheme.Border,
+                   .Padding = New Padding(1)
+               }
+        pnlTextBoxBorder.Controls.Add(txtOutput)
+
+        pnlContent.Controls.Add(pnlTextBoxBorder)
+        Me.Controls.Add(pnlContent)
+    End Sub
+
+    Private Sub CreateButtons()
+        ' Button panel
+        Dim pnlButtons = New Panel With {
+       .Dock = DockStyle.Bottom,
+            .Height = EnterpriseDesignSystem.ControlSizes.ButtonMedium.Height + (EnterpriseDesignSystem.Spacing.XLarge * 2),
+    .BackColor = EnterpriseDesignSystem.LightTheme.Surface,
+      .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
+        }
+
+        ' Run button
+        btnRun = New Button With {
+        .Text = "▶️ Run Demonstration",
+      .Size = New Size(200, EnterpriseDesignSystem.ControlSizes.ButtonMedium.Height),
+              .Location = New Point(EnterpriseDesignSystem.Spacing.XLarge, EnterpriseDesignSystem.Spacing.Large),
+              .FlatStyle = FlatStyle.Flat,
+         .BackColor = EnterpriseDesignSystem.SemanticColors.Success,
+    .ForeColor = EnterpriseDesignSystem.NeutralColors.White,
+         .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body, FontStyle.Bold),
+              .Cursor = Cursors.Hand
+       }
+        btnRun.FlatAppearance.BorderSize = 0
+
+        ' Clear button
+        btnClear = New Button With {
+    .Text = "🗑️ Clear Output",
+          .Size = New Size(150, EnterpriseDesignSystem.ControlSizes.ButtonMedium.Height),
+        .Location = New Point(btnRun.Right + EnterpriseDesignSystem.Spacing.Medium, EnterpriseDesignSystem.Spacing.Large),
+ .FlatStyle = FlatStyle.Flat,
+            .BackColor = EnterpriseDesignSystem.SemanticColors.Warning,
+        .ForeColor = EnterpriseDesignSystem.NeutralColors.White,
+            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body, FontStyle.Bold),
+            .Cursor = Cursors.Hand
+        }
+        btnClear.FlatAppearance.BorderSize = 0
+
+        ' Add hover effects
+        AddButtonHoverEffect(btnRun, EnterpriseDesignSystem.SemanticColors.Success)
+        AddButtonHoverEffect(btnClear, EnterpriseDesignSystem.SemanticColors.Warning)
+
+        ' Wire up events
+        AddHandler btnRun.Click, AddressOf RunDemo_Click
+        AddHandler btnClear.Click, AddressOf ClearOutput_Click
+
+        pnlButtons.Controls.AddRange({btnRun, btnClear})
+        Me.Controls.Add(pnlButtons)
+    End Sub
+
+    Private Sub CreateFooter()
+        pnlFooter = New Panel With {
+      .Dock = DockStyle.Bottom,
+   .Height = 40,
+     .BackColor = EnterpriseDesignSystem.ModuleColors.OOP
+           }
+
+        Dim lblFooter = New Label With {
+            .Text = "Enterprise Learning Platform | Object-Oriented Programming Module",
+   .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Caption),
+.ForeColor = ColorHelper.Lighten(EnterpriseDesignSystem.NeutralColors.White, 0.2),
+      .Dock = DockStyle.Fill,
+.TextAlign = ContentAlignment.MiddleCenter
+    }
+
+        pnlFooter.Controls.Add(lblFooter)
+        Me.Controls.Add(pnlFooter)
+    End Sub
+
+    Private Sub AddButtonHoverEffect(btn As Button, originalColor As Color)
+        AddHandler btn.MouseEnter, Sub(s, e)
+                                       btn.BackColor = ControlPaint.Light(originalColor, 0.2F)
+                                   End Sub
+        AddHandler btn.MouseLeave, Sub(s, e)
+                                       btn.BackColor = originalColor
+                                   End Sub
+    End Sub
+
+#End Region
+
+#Region "Event Handlers"
+
+    Private Sub DisplayWelcomeMessage()
+        txtOutput.Text = "═══════════════════════════════════════════════════════════════" & vbCrLf &
+    "  POLYMORPHISM DEMONSTRATION" & vbCrLf &
+         "═══════════════════════════════════════════════════════════════" & vbCrLf & vbCrLf &
+     "Welcome! This demonstration shows how polymorphism works in" & vbCrLf &
+    "object-oriented programming." & vbCrLf & vbCrLf &
+              "Key Concepts:" & vbCrLf &
+   "• Same method name, different implementations" & vbCrLf &
+      "• Base class reference, derived class objects" & vbCrLf &
+            "• Runtime method selection" & vbCrLf & vbCrLf &
+     "Click 'Run Demonstration' to see polymorphism in action!" & vbCrLf & vbCrLf &
+   "═══════════════════════════════════════════════════════════════"
+    End Sub
+
+    Private Sub RunDemo_Click(sender As Object, e As EventArgs)
         Try
-            TextBox1.AppendText(vbCrLf & "═══════════════════════════════════════" & vbCrLf)
-            TextBox1.AppendText("🔄 POLYMORPHISM DEMO - Running..." & vbCrLf)
-            TextBox1.AppendText("═══════════════════════════════════════" & vbCrLf & vbCrLf)
+            txtOutput.Clear()
 
-            ' Demonstrate polymorphism with Dog
-            TextBox1.AppendText("1️⃣ Dog via Animal reference:" & vbCrLf)
-            Dim a As Animal = New Dog()
-            TextBox1.AppendText($"   Speak(): {a.Speak()}" & vbCrLf)
-            TextBox1.AppendText($"   Eat(): {a.Eat()}" & vbCrLf & vbCrLf)
+            Dim output As New System.Text.StringBuilder()
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+            output.AppendLine("  🔄 POLYMORPHISM IN ACTION")
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+            output.AppendLine()
+            output.AppendLine("Creating different animals using Animal reference type...")
+            output.AppendLine()
 
-            ' Demonstrate polymorphism with Cat
-            TextBox1.AppendText("2️⃣ Cat via Animal reference:" & vbCrLf)
-            a = New Cat()
-            TextBox1.AppendText($"   Speak(): {a.Speak()}" & vbCrLf)
-            TextBox1.AppendText($"   Eat(): {a.Eat()}" & vbCrLf & vbCrLf)
+            ' Dog demonstration
+            output.AppendLine("───────────────────────────────────────────────────────────────")
+            output.AppendLine("1️⃣  DOG INSTANCE")
+            output.AppendLine("───────────────────────────────────────────────────────────────")
+            output.AppendLine()
+            Dim animal As Animal = New Dog()
+            output.AppendLine("   Dim animal As Animal = New Dog()")
+            output.AppendLine()
+            output.AppendLine("   Calling: animal.Speak()")
+            output.AppendLine($"   🐕 Result: {animal.Speak()}")
+            output.AppendLine()
+            output.AppendLine("   Calling: animal.Eat()")
+            output.AppendLine($"   🍖 Result: {animal.Eat()}")
+            output.AppendLine()
 
-            ' Demonstrate polymorphism with Bird
-            TextBox1.AppendText("3️⃣ Bird via Animal reference:" & vbCrLf)
-            a = New Bird()
-            TextBox1.AppendText($"   Speak(): {a.Speak()}" & vbCrLf)
-            TextBox1.AppendText($"   Eat(): {a.Eat()} (uses base)" & vbCrLf & vbCrLf)
+            ' Cat demonstration
+            output.AppendLine("───────────────────────────────────────────────────────────────")
+            output.AppendLine("2️⃣  CAT INSTANCE")
+            output.AppendLine("───────────────────────────────────────────────────────────────")
+            output.AppendLine()
+            animal = New Cat()
+            output.AppendLine("   animal = New Cat()")
+            output.AppendLine()
+            output.AppendLine("   Calling: animal.Speak()")
+            output.AppendLine($"   🐱 Result: {animal.Speak()}")
+            output.AppendLine()
+            output.AppendLine("   Calling: animal.Eat()")
+            output.AppendLine($"   🐟 Result: {animal.Eat()}")
+            output.AppendLine()
 
-            TextBox1.AppendText("═══════════════════════════════════════" & vbCrLf)
-            TextBox1.AppendText("✅ Demo Complete!" & vbCrLf)
-            TextBox1.AppendText("💡 Same reference type, different behaviors" & vbCrLf)
+            ' Bird demonstration
+            output.AppendLine("───────────────────────────────────────────────────────────────")
+            output.AppendLine("3️⃣  BIRD INSTANCE")
+            output.AppendLine("───────────────────────────────────────────────────────────────")
+            output.AppendLine()
+            animal = New Bird()
+            output.AppendLine("   animal = New Bird()")
+            output.AppendLine()
+            output.AppendLine("   Calling: animal.Speak()")
+            output.AppendLine($"   🐦 Result: {animal.Speak()}")
+            output.AppendLine()
+            output.AppendLine("   Calling: animal.Eat()")
+            output.AppendLine($"   🌾 Result: {animal.Eat()}")
+            output.AppendLine("   Note: Bird uses base class implementation")
+            output.AppendLine()
+
+            ' Summary
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+            output.AppendLine("  ✅ KEY OBSERVATIONS")
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+            output.AppendLine()
+            output.AppendLine("✓ Same reference type (Animal) throughout")
+            output.AppendLine("✓ Different object types (Dog, Cat, Bird)")
+            output.AppendLine("✓ Same method calls produce different results")
+            output.AppendLine("✓ Each type provides unique implementation")
+            output.AppendLine("✓ Method selection happens at runtime")
+            output.AppendLine()
+            output.AppendLine("This is the power of Polymorphism! 🎯")
+            output.AppendLine()
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+
+            txtOutput.Text = output.ToString()
 
             If AppConfiguration.Features.EnableLogging Then
-                Debug.WriteLine($"[{DateTime.Now}] Polymorphism demo executed")
+                Debug.WriteLine($"[{DateTime.Now}] Polymorphism demo executed successfully")
             End If
 
         Catch ex As Exception
             If AppConfiguration.Features.EnableLogging Then
                 Debug.WriteLine($"[{DateTime.Now}] Polymorphism error: {ex.Message}")
             End If
-            MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show($"An error occurred: {ex.Message}", "Error",
+          MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
-    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
-        TextBox1.ReadOnly = True
+    Private Sub ClearOutput_Click(sender As Object, e As EventArgs)
+        DisplayWelcomeMessage()
     End Sub
+
+#End Region
+
 End Class
 
-' Base class Animal
-Public MustInherit Class Animal
-    ''' <summary>
-    ''' Abstract method that must be implemented by derived classes
-    ''' </summary>
-    Public MustOverride Function Speak() As String
+#Region "Animal Class Hierarchy"
 
-    ''' <summary>
-    ''' Virtual method that can be overridden
-    ''' </summary>
+''' <summary>
+''' Base Animal class - demonstrates abstraction
+''' </summary>
+Public MustInherit Class Animal
+    Public MustOverride Function Speak() As String
     Public Overridable Function Eat() As String
         Return "Animal is eating"
     End Function
-
-    ''' <summary>
-    ''' Regular method
-    ''' </summary>
-    Public Function Sleep() As String
-        Return "Animal is sleeping"
-    End Function
 End Class
 
-' Derived class Dog
+''' <summary>
+''' Dog class - demonstrates polymorphism through method overriding
+''' </summary>
 Public Class Dog
     Inherits Animal
-
     Public Overrides Function Speak() As String
-        Return "Dog barks: Woof! Woof!"
+        Return "Woof! Woof! (Dog barking)"
     End Function
-
     Public Overrides Function Eat() As String
         Return "Dog is eating dog food"
     End Function
 End Class
 
-' Derived class Cat
+''' <summary>
+''' Cat class - demonstrates polymorphism through method overriding
+''' </summary>
 Public Class Cat
     Inherits Animal
-
     Public Overrides Function Speak() As String
-        Return "Cat meows: Meow! Meow!"
+        Return "Meow! Meow! (Cat meowing)"
     End Function
-
     Public Overrides Function Eat() As String
         Return "Cat is eating fish"
     End Function
 End Class
 
-' Derived class Bird
+''' <summary>
+''' Bird class - demonstrates use of base class implementation
+''' </summary>
 Public Class Bird
     Inherits Animal
-
     Public Overrides Function Speak() As String
-        Return "Bird chirps: Tweet! Tweet!"
+        Return "Tweet! Tweet! (Bird chirping)"
     End Function
-
-    ' This class doesn't override Eat(), so it uses the base implementation
+    ' Note: Eat() not overridden, uses base implementation
 End Class
+
+#End Region
