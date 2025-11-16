@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form3
+Partial Class PriestDemon
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -22,17 +22,9 @@ Partial Class Form3
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.SuspendLayout()
-        ' 
-        ' Form3
-        ' 
-        Me.AutoScaleDimensions = New SizeF(7.0F, 15.0F)
-        Me.AutoScaleMode = AutoScaleMode.Font
-        Me.ClientSize = New Size(1000, 700)
-        Me.MinimumSize = New Size(800, 600)
-        Me.Name = "Form3"
-        Me.Text = "Inheritance - OOP Demonstration"
-        Me.StartPosition = FormStartPosition.CenterScreen
-        Me.ResumeLayout(False)
+        components = New System.ComponentModel.Container
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.Text = "PriestDemon"
     End Sub
 End Class

@@ -343,8 +343,7 @@ Partial Class Form2
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        BackColor = SystemColors.Control
-        BackgroundImage = My.Resources.Resources.DeWatermark_ai_1756810305918
+        BackColor = EnterpriseDesignSystem.LightTheme.Background
         ClientSize = New Size(800, 450)
         Controls.Add(explnrslt)
         Controls.Add(btnequals)

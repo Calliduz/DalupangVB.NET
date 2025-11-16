@@ -118,10 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="DeWatermark.ai_1756810305918" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DeWatermark.ai_1756810305918.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Background" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Background1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Boat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Boat1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="paper-style-abstract-background_23-2149124363" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\paper-style-abstract-background_23-2149124363.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DeWatermark.ai_1756810305918" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DeWatermark.ai_1756810305918.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Priest" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Priest1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Devil" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Devil1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
