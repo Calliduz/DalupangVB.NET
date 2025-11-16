@@ -459,8 +459,8 @@ moduleInfo.Description,
     Private Function CreateModuleCard(title As String, description As String, topics As String,
         accentColor As Color, clickAction As Action) As Panel
         Dim card As New Panel With {
-          .Size = New Size(400, 220),
-         .Margin = EnterpriseDesignSystem.CreatePadding(10),
+ .Size = New Size(420, 220),
+   .Margin = EnterpriseDesignSystem.CreatePadding(10),
   .BackColor = If(_isDarkMode, EnterpriseDesignSystem.DarkTheme.Surface, EnterpriseDesignSystem.LightTheme.Surface),
   .Cursor = Cursors.Hand,
          .Tag = New With {title, description, topics, accentColor}
@@ -474,10 +474,10 @@ moduleInfo.Description,
         ' Title Label
         Dim lblTitle As New Label With {
             .Text = title,
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.H4, FontStyle.Bold),
+  .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.H4, FontStyle.Bold),
    .ForeColor = If(_isDarkMode, EnterpriseDesignSystem.DarkTheme.TextPrimary, EnterpriseDesignSystem.LightTheme.TextPrimary),
      .Location = New Point(EnterpriseDesignSystem.Spacing.Large, EnterpriseDesignSystem.Spacing.Large),
-       .Size = New Size(360, 30),
+       .Size = New Size(380, 35),
             .AutoEllipsis = True
   }
 
@@ -486,29 +486,31 @@ moduleInfo.Description,
             .Text = description,
     .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
       .ForeColor = If(_isDarkMode, EnterpriseDesignSystem.DarkTheme.TextSecondary, EnterpriseDesignSystem.LightTheme.TextSecondary),
-       .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 55),
-        .Size = New Size(360, 40)
+       .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 60),
+        .Size = New Size(380, 40),
+        .AutoEllipsis = True
  }
 
         ' Topics Label
         Dim lblTopics As New Label With {
-            .Text = topics,
+      .Text = topics,
      .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Caption, FontStyle.Italic),
       .ForeColor = If(_isDarkMode, EnterpriseDesignSystem.DarkTheme.TextTertiary, EnterpriseDesignSystem.LightTheme.TextTertiary),
-            .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 105),
-  .Size = New Size(360, 40)
+        .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 110),
+  .Size = New Size(380, 45),
+        .AutoEllipsis = True
       }
 
         ' Action Button
         Dim btnExplore As New Button With {
          .Text = "Explore Module →",
-       .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 160),
-            .Size = EnterpriseDesignSystem.ControlSizes.ButtonMedium,
+       .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 165),
+        .Size = EnterpriseDesignSystem.ControlSizes.ButtonMedium,
    .FlatStyle = FlatStyle.Flat,
     .BackColor = accentColor,
     .ForeColor = Color.White,
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body, FontStyle.Bold),
-            .Cursor = Cursors.Hand
+       .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body, FontStyle.Bold),
+     .Cursor = Cursors.Hand
         }
         btnExplore.FlatAppearance.BorderSize = 0
 

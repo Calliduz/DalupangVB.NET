@@ -28,6 +28,12 @@ Public Class Encapsulation
 
     Public Sub New()
         InitializeComponent()
+
+        ' CRITICAL: Clear any designer-created controls immediately
+        Me.Controls.Clear()
+        Me.BackgroundImage = Nothing
+
+        ' Now build the enterprise UI
         InitializeEnterpriseUI()
     End Sub
 
@@ -40,9 +46,9 @@ Public Class Encapsulation
     End Sub
 
     Private Sub InitializeEnterpriseUI()
-        ' Apply enterprise design system
         Me.BackColor = EnterpriseDesignSystem.LightTheme.Background
         Me.Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body)
+        Me.BackgroundImage = Nothing ' Force remove background
 
         ' Enable performance optimizations
         If AppConfiguration.Performance.EnableDoubleBuffering Then
@@ -52,39 +58,42 @@ Public Class Encapsulation
                         ControlStyles.UserPaint, True)
         End If
 
-        CreateHeader()
-        CreateInstructions()
-        CreateOutputArea()
-        CreateButtons()
+        ' CRITICAL: Reverse dock order (bottom-to-top)
         CreateFooter()
+        CreateButtons()
+        CreateOutputArea()
+        CreateInstructions()
+        CreateHeader()
     End Sub
 
     Private Sub CreateHeader()
         ' Header panel with gradient feel
         pnlHeader = New Panel With {
-            .Dock = DockStyle.Top,
-            .Height = 100,
-            .BackColor = EnterpriseDesignSystem.ModuleColors.OOP,
-            .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.Large)
-        }
+        .Dock = DockStyle.Top,
+        .Height = 120,
+        .BackColor = EnterpriseDesignSystem.ModuleColors.OOP,
+        .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
+    }
 
         ' Title label
         lblTitle = New Label With {
-            .Text = "🔐 Encapsulation Demonstration",
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Hero, FontStyle.Bold),
-            .ForeColor = EnterpriseDesignSystem.NeutralColors.White,
-            .AutoSize = True,
-            .Location = New Point(EnterpriseDesignSystem.Spacing.Large, EnterpriseDesignSystem.Spacing.Large)
-        }
+        .Text = "🔐 Encapsulation Demonstration",
+        .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.H2, FontStyle.Bold),
+        .ForeColor = EnterpriseDesignSystem.NeutralColors.White,
+        .AutoSize = False,
+        .Size = New Size(900, 35),
+        .Location = New Point(EnterpriseDesignSystem.Spacing.XLarge, EnterpriseDesignSystem.Spacing.Large)
+    }
 
         ' Description label
         lblDescription = New Label With {
-            .Text = "Learn how to protect data and control access through encapsulation",
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
-            .ForeColor = ColorHelper.Lighten(EnterpriseDesignSystem.NeutralColors.White, 0.2),
-            .AutoSize = True,
-            .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 55)
-        }
+        .Text = "Learn how to protect data and control access through encapsulation",
+        .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
+        .ForeColor = ColorHelper.Lighten(EnterpriseDesignSystem.NeutralColors.White, 0.2),
+        .AutoSize = False,
+        .Size = New Size(900, 25),
+        .Location = New Point(EnterpriseDesignSystem.Spacing.XLarge, 65)
+    }
 
         pnlHeader.Controls.AddRange({lblTitle, lblDescription})
         Me.Controls.Add(pnlHeader)
@@ -93,42 +102,32 @@ Public Class Encapsulation
     Private Sub CreateInstructions()
         ' Instructions panel
         pnlInstructions = New Panel With {
-            .Dock = DockStyle.Top,
-            .Height = 180,
+   .Dock = DockStyle.Top,
+     .Height = 200,
             .BackColor = EnterpriseDesignSystem.LightTheme.Surface,
-            .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
-        }
+ .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
+    }
 
         Dim lblInstructionsTitle = New Label With {
-            .Text = "💡 What is Encapsulation?",
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.H3, FontStyle.Bold),
+  .Text = "💡 What is Encapsulation?",
+            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.H4, FontStyle.Bold),
             .ForeColor = EnterpriseDesignSystem.LightTheme.TextPrimary,
-            .Dock = DockStyle.Top,
-            .Height = 30
-        }
+        .AutoSize = False,
+   .Size = New Size(900, 30),
+     .Location = New Point(EnterpriseDesignSystem.Spacing.XLarge, EnterpriseDesignSystem.Spacing.Large)
+      }
 
         Dim lblInstructionsText = New Label With {
-            .Text = "Encapsulation bundles data and methods together while restricting direct access to internal data." & vbCrLf & vbCrLf &
-                      "Example: BankAccount class" & vbCrLf &
-                      "• Private balance field (hidden from outside access)" & vbCrLf &
-                      "• Public methods (Deposit, Withdraw, GetBalance) control all access" & vbCrLf &
-                      "• Invalid operations are automatically rejected",
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
-            .ForeColor = EnterpriseDesignSystem.LightTheme.TextSecondary,
-            .Dock = DockStyle.Fill,
-            .AutoSize = False
-        }
+      .Text = "Encapsulation bundles data and methods together while restricting direct access to internal data." & vbCrLf & vbCrLf &
+     "Example: BankAccount class with private balance field and public methods (Deposit, Withdraw, GetBalance) that control all access. Invalid operations are automatically rejected.",
+  .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
+      .ForeColor = EnterpriseDesignSystem.LightTheme.TextSecondary,
+       .AutoSize = False,
+      .Size = New Size(900, 110),
+      .Location = New Point(EnterpriseDesignSystem.Spacing.XLarge, 60)
+      }
 
-        Dim lblBenefits = New Label With {
-            .Text = "Benefits: Data Protection • Controlled Access • Implementation Hiding • Easier Maintenance",
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Caption, FontStyle.Italic),
-            .ForeColor = EnterpriseDesignSystem.SemanticColors.Info,
-            .Dock = DockStyle.Bottom,
-            .Height = 20,
-            .TextAlign = ContentAlignment.MiddleLeft
-        }
-
-        pnlInstructions.Controls.AddRange({lblInstructionsText, lblInstructionsTitle, lblBenefits})
+        pnlInstructions.Controls.AddRange({lblInstructionsTitle, lblInstructionsText})
         Me.Controls.Add(pnlInstructions)
     End Sub
 

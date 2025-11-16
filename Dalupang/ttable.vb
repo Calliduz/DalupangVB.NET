@@ -1,264 +1,317 @@
-﻿Imports System.ComponentModel
+﻿Imports System.Drawing
+Imports System.Windows.Forms
+Imports System.ComponentModel
 
-''' <summary>
-''' Truth Table Generator and Interactive Boolean Logic Demonstrator
-''' Educational tool for visualizing boolean operations and logical operators
-''' </summary>
 Public Class TruthTableDemonstration
     Inherits Form
 
-#Region "Constants"
+#Region "Private Fields"
 
-    Private Const COLUMN_INPUT_A As String = "InputA"
-    Private Const COLUMN_INPUT_B As String = "InputB"
-    Private Const COLUMN_NOT_A As String = "NotA"
-    Private Const COLUMN_AND As String = "And"
-    Private Const COLUMN_OR As String = "Or"
-    Private Const COLUMN_XOR As String = "Xor"
+    Private pnlHeader As Panel
+    Private pnlContent As Panel
+    Private pnlFooter As Panel
+    Private lblTitle As Label
+    Private lblDescription As Label
+    Private dgvTruthTable As DataGridView
+    Private btnGenerate As Button
+    Private btnClear As Button
+    Private pnlInstructions As Panel
+    Private pnlInteractive As Panel
+    Private chkInputA As CheckBox
+    Private chkInputB As CheckBox
+    Private lblResults As Label
+
+#End Region
+
+#Region "Constructor"
+
+    Public Sub New()
+        InitializeComponent()
+        Me.Controls.Clear()
+        Me.BackgroundImage = Nothing
+        InitializeEnterpriseUI()
+    End Sub
 
 #End Region
 
 #Region "Form Initialization"
 
     Private Sub TruthTableDemonstration_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        InitializeUI()
-        ConfigureDataGridView()
         GenerateTruthTable()
         UpdateInteractiveResults()
     End Sub
 
-    ''' <summary>
-    ''' Configure UI elements for optimal user experience
-    ''' </summary>
-    Private Sub InitializeUI()
-        Me.Text = "Boolean Logic - Truth Table Demonstration"
-        Me.StartPosition = FormStartPosition.CenterScreen
+    Private Sub InitializeEnterpriseUI()
+        Me.BackColor = EnterpriseDesignSystem.LightTheme.Background
+        Me.BackgroundImage = Nothing
 
-        ' Configure interactive controls
-        ConfigureCheckBox(chkInputA, "Input A", "Toggle boolean value A")
-        ConfigureCheckBox(chkInputB, "Input B", "Toggle boolean value B")
+        If AppConfiguration.Performance.EnableDoubleBuffering Then
+            Me.DoubleBuffered = True
+            Me.SetStyle(ControlStyles.OptimizedDoubleBuffer Or
+           ControlStyles.AllPaintingInWmPaint Or
+  ControlStyles.UserPaint, True)
+        End If
 
-        ' Configure button
-        btnGenerate.FlatStyle = FlatStyle.Flat
-        btnGenerate.BackColor = Color.FromArgb(70, 130, 180)
-        btnGenerate.ForeColor = Color.White
-        btnGenerate.Font = New Font("Segoe UI", 11, FontStyle.Bold)
-        btnGenerate.Cursor = Cursors.Hand
-
-        ' Configure group box
-        grpInteractive.Text = "Interactive Boolean Logic Tester"
-        grpInteractive.Font = New Font("Segoe UI", 10, FontStyle.Bold)
-        grpInteractive.ForeColor = Color.FromArgb(70, 130, 180)
-
-        ' Configure result labels
-        ConfigureResultLabel(lblNotResult, "NOT Result")
-        ConfigureResultLabel(lblAndResult, "AND Result")
-        ConfigureResultLabel(lblOrResult, "OR Result")
-        ConfigureResultLabel(lblXorResult, "XOR Result")
+        CreateFooter()
+        CreateButtons()
+        CreateContentArea()
+        CreateInteractive()
+        CreateInstructions()
+        CreateHeader()
     End Sub
 
-    ''' <summary>
-    ''' Configure checkbox properties for consistency
-    ''' </summary>
-    Private Sub ConfigureCheckBox(checkBox As CheckBox, text As String, accessibleName As String)
-        checkBox.Text = text
-        checkBox.Font = New Font("Segoe UI", 10, FontStyle.Regular)
-        checkBox.AccessibleName = accessibleName
-        checkBox.Cursor = Cursors.Hand
+    Private Sub CreateHeader()
+        pnlHeader = New Panel With {
+   .Dock = DockStyle.Top,
+     .Height = 110,
+            .BackColor = EnterpriseDesignSystem.ModuleColors.Games,
+            .Padding = New Padding(24, 20, 24, 20)
+        }
+
+        lblTitle = New Label With {
+         .Text = "✓❌ Truth Table Generator",
+       .Font = New Font("Segoe UI", 18, FontStyle.Bold),
+         .ForeColor = Color.White,
+            .AutoSize = True,
+      .Location = New Point(24, 16)
+        }
+
+        lblDescription = New Label With {
+    .Text = "Interactive boolean logic demonstration and truth table generator",
+            .Font = New Font("Segoe UI", 10),
+         .ForeColor = Color.FromArgb(240, 240, 240),
+ .AutoSize = True,
+            .Location = New Point(24, 50)
+   }
+
+        pnlHeader.Controls.AddRange({lblTitle, lblDescription})
+        Me.Controls.Add(pnlHeader)
     End Sub
 
-    ''' <summary>
-    ''' Configure result label styling
-    ''' </summary>
-    Private Sub ConfigureResultLabel(label As Label, accessibleName As String)
-        label.Font = New Font("Consolas", 10, FontStyle.Bold)
-        label.ForeColor = Color.White
-        label.BackColor = Color.FromArgb(50, 50, 50)
-        label.Padding = New Padding(5)
-        label.AutoSize = False
-        label.Width = 200
-        label.AccessibleName = accessibleName
+    Private Sub CreateInstructions()
+        pnlInstructions = New Panel With {
+            .Dock = DockStyle.Top,
+            .Height = 110,
+.BackColor = Color.White,
+   .Padding = New Padding(32, 20, 32, 20)
+     }
+
+        Dim lblTitle = New Label With {
+   .Text = "💡 Boolean Logic Demonstration",
+            .Font = New Font("Segoe UI", 13, FontStyle.Bold),
+         .ForeColor = Color.FromArgb(45, 55, 72),
+   .AutoSize = True,
+       .Location = New Point(32, 16)
+        }
+
+        Dim lblText = New Label With {
+  .Text = "Explore all boolean operations (AND, OR, NOT, XOR). Toggle inputs to see results update in real-time!",
+    .Font = New Font("Segoe UI", 10),
+      .ForeColor = Color.FromArgb(100, 116, 139),
+     .AutoSize = False,
+            .Size = New Size(900, 40),
+            .Location = New Point(32, 48)
+        }
+
+        pnlInstructions.Controls.AddRange({lblTitle, lblText})
+        Me.Controls.Add(pnlInstructions)
     End Sub
 
-    ''' <summary>
-    ''' Configure DataGridView for optimal display
-    ''' </summary>
-    Private Sub ConfigureDataGridView()
-        With dgvTruthTable
-            .AllowUserToAddRows = False
-            .AllowUserToDeleteRows = False
-            .AllowUserToResizeRows = False
-            .ReadOnly = True
-            .SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            .MultiSelect = False
-            .RowHeadersVisible = False
-            .BackgroundColor = Color.White
-            .BorderStyle = BorderStyle.Fixed3D
-            .EnableHeadersVisualStyles = False
-            .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+    Private Sub CreateInteractive()
+        pnlInteractive = New Panel With {
+            .Dock = DockStyle.Top,
+            .Height = 100,
+  .BackColor = Color.FromArgb(248, 250, 252),
+  .Padding = New Padding(32, 20, 32, 20)
+  }
 
-            ' Header styling
-            .ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(70, 130, 180)
-            .ColumnHeadersDefaultCellStyle.ForeColor = Color.White
-            .ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
-            .ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .ColumnHeadersHeight = 40
+        chkInputA = New CheckBox With {
+               .Text = "Input A (Boolean)",
+               .Location = New Point(32, 25),
+               .AutoSize = True,
+        .Font = New Font("Segoe UI", 11, FontStyle.Bold),
+               .Checked = True,
+               .Cursor = Cursors.Hand
+        }
 
-            ' Cell styling
-            .DefaultCellStyle.Font = New Font("Consolas", 10)
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .DefaultCellStyle.SelectionBackColor = Color.FromArgb(100, 149, 237)
-            .DefaultCellStyle.SelectionForeColor = Color.White
-            .RowTemplate.Height = 30
+        chkInputB = New CheckBox With {
+ .Text = "Input B (Boolean)",
+    .Location = New Point(250, 25),
+            .AutoSize = True,
+            .Font = New Font("Segoe UI", 11, FontStyle.Bold),
+            .Checked = False,
+          .Cursor = Cursors.Hand
+        }
 
-            ' Alternating row colors
-            .AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240)
-        End With
+        lblResults = New Label With {
+  .Location = New Point(450, 20),
+  .AutoSize = False,
+.Size = New Size(400, 50),
+            .Font = New Font("Consolas", 10, FontStyle.Bold),
+      .ForeColor = Color.FromArgb(45, 55, 72),
+          .Text = "Results update automatically..."
+        }
 
-        ' Add columns
-        AddTruthTableColumns()
+        AddHandler chkInputA.CheckedChanged, AddressOf CheckBox_Changed
+        AddHandler chkInputB.CheckedChanged, AddressOf CheckBox_Changed
+
+        pnlInteractive.Controls.AddRange({chkInputA, chkInputB, lblResults})
+        Me.Controls.Add(pnlInteractive)
     End Sub
 
-    ''' <summary>
-    ''' Add columns to the truth table grid
-    ''' </summary>
-    Private Sub AddTruthTableColumns()
+    Private Sub CreateContentArea()
+        pnlContent = New Panel With {
+       .Dock = DockStyle.Fill,
+            .BackColor = EnterpriseDesignSystem.LightTheme.Background,
+            .Padding = New Padding(32, 24, 32, 24)
+  }
+
+        dgvTruthTable = New DataGridView With {
+            .Dock = DockStyle.Fill,
+         .AllowUserToAddRows = False,
+            .AllowUserToDeleteRows = False,
+   .ReadOnly = True,
+            .SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+  .BackgroundColor = Color.White,
+       .BorderStyle = BorderStyle.FixedSingle,
+ .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+            .RowHeadersVisible = False,
+            .Font = New Font("Consolas", 10)
+        }
+
+        dgvTruthTable.ColumnHeadersDefaultCellStyle.BackColor = EnterpriseDesignSystem.ModuleColors.Games
+        dgvTruthTable.ColumnHeadersDefaultCellStyle.ForeColor = Color.White
+        dgvTruthTable.ColumnHeadersDefaultCellStyle.Font = New Font("Segoe UI", 10, FontStyle.Bold)
+        dgvTruthTable.ColumnHeadersHeight = 40
+        dgvTruthTable.RowTemplate.Height = 30
+
+        ConfigureDataGridColumns()
+
+        pnlContent.Controls.Add(dgvTruthTable)
+        Me.Controls.Add(pnlContent)
+    End Sub
+
+    Private Sub ConfigureDataGridColumns()
         dgvTruthTable.Columns.Clear()
+        dgvTruthTable.Columns.Add("A", "A")
+        dgvTruthTable.Columns.Add("B", "B")
+        dgvTruthTable.Columns.Add("NotA", "NOT A")
+        dgvTruthTable.Columns.Add("And", "A AND B")
+        dgvTruthTable.Columns.Add("Or", "A OR B")
+        dgvTruthTable.Columns.Add("Xor", "A XOR B")
 
-        ' Input columns with blue background
-        AddStyledColumn(COLUMN_INPUT_A, "A", Color.FromArgb(200, 230, 255))
-        AddStyledColumn(COLUMN_INPUT_B, "B", Color.FromArgb(200, 230, 255))
-
-        ' Operation columns with yellow background
-        AddStyledColumn(COLUMN_NOT_A, "NOT A", Color.FromArgb(255, 255, 200))
-        AddStyledColumn(COLUMN_AND, "A AND B", Color.FromArgb(200, 255, 200))
-        AddStyledColumn(COLUMN_OR, "A OR B", Color.FromArgb(255, 230, 200))
-        AddStyledColumn(COLUMN_XOR, "A XOR B", Color.FromArgb(230, 200, 255))
+        For i = 0 To 1
+            dgvTruthTable.Columns(i).DefaultCellStyle.BackColor = Color.FromArgb(200, 230, 255)
+        Next
+        For i = 2 To 5
+            dgvTruthTable.Columns(i).DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200)
+        Next
     End Sub
 
-    ''' <summary>
-    ''' Add styled column to DataGridView
-    ''' </summary>
-    Private Sub AddStyledColumn(columnName As String, headerText As String, backColor As Color)
-        Dim column As New DataGridViewTextBoxColumn()
-        column.Name = columnName
-        column.HeaderText = headerText
-        column.DefaultCellStyle.BackColor = backColor
-        dgvTruthTable.Columns.Add(column)
+    Private Sub CreateButtons()
+        Dim pnlButtons = New Panel With {
+     .Dock = DockStyle.Bottom,
+            .Height = 80,
+  .BackColor = Color.White,
+     .Padding = New Padding(32, 16, 32, 16)
+        }
+
+        btnGenerate = New Button With {
+            .Text = "🔄 Regenerate Table",
+            .Size = New Size(180, 40),
+   .Location = New Point(32, 16),
+  .FlatStyle = FlatStyle.Flat,
+            .BackColor = Color.FromArgb(34, 197, 94),
+   .ForeColor = Color.White,
+ .Font = New Font("Segoe UI", 10, FontStyle.Bold),
+  .Cursor = Cursors.Hand
+  }
+        btnGenerate.FlatAppearance.BorderSize = 0
+
+        btnClear = New Button With {
+        .Text = "🗑️ Reset",
+          .Size = New Size(120, 40),
+            .Location = New Point(224, 16),
+            .FlatStyle = FlatStyle.Flat,
+         .BackColor = Color.FromArgb(251, 191, 36),
+ .ForeColor = Color.White,
+      .Font = New Font("Segoe UI", 10, FontStyle.Bold),
+    .Cursor = Cursors.Hand
+        }
+        btnClear.FlatAppearance.BorderSize = 0
+
+        AddHandler btnGenerate.Click, AddressOf btnGenerate_Click
+        AddHandler btnClear.Click, AddressOf btnClear_Click
+
+        pnlButtons.Controls.AddRange({btnGenerate, btnClear})
+        Me.Controls.Add(pnlButtons)
+    End Sub
+
+    Private Sub CreateFooter()
+        pnlFooter = New Panel With {
+           .Dock = DockStyle.Bottom,
+                  .Height = 36,
+         .BackColor = EnterpriseDesignSystem.ModuleColors.Games
+              }
+
+        Dim lblFooter = New Label With {
+   .Text = "Enterprise Learning Platform  |  Logic Games Module",
+   .Font = New Font("Segoe UI", 8),
+        .ForeColor = Color.FromArgb(220, 220, 220),
+               .Dock = DockStyle.Fill,
+       .TextAlign = ContentAlignment.MiddleCenter
+           }
+
+        pnlFooter.Controls.Add(lblFooter)
+        Me.Controls.Add(pnlFooter)
     End Sub
 
 #End Region
 
-#Region "Truth Table Generation"
+#Region "Truth Table Logic"
 
-    ''' <summary>
-    ''' Generate complete truth table for all boolean combinations
-    ''' </summary>
     Private Sub GenerateTruthTable()
         dgvTruthTable.Rows.Clear()
+        Dim values() As Boolean = {True, False}
 
-        Dim booleanValues As Boolean() = {True, False}
+        For Each a In values
+            For Each b In values
+                Dim row = New DataGridViewRow()
+                row.CreateCells(dgvTruthTable)
+                row.Cells(0).Value = If(a, "TRUE", "FALSE")
+                row.Cells(1).Value = If(b, "TRUE", "FALSE")
+                row.Cells(2).Value = If(Not a, "TRUE", "FALSE")
+                row.Cells(3).Value = If(a And b, "TRUE", "FALSE")
+                row.Cells(4).Value = If(a Or b, "TRUE", "FALSE")
+                row.Cells(5).Value = If(a Xor b, "TRUE", "FALSE")
 
-        For Each valueA In booleanValues
-            For Each valueB In booleanValues
-                AddTruthTableRow(valueA, valueB)
+                For i = 2 To 5
+                    Dim val = row.Cells(i).Value.ToString()
+                    If val = "TRUE" Then
+                        row.Cells(i).Style.ForeColor = Color.DarkGreen
+                        row.Cells(i).Style.Font = New Font("Consolas", 10, FontStyle.Bold)
+                    Else
+                        row.Cells(i).Style.ForeColor = Color.DarkRed
+                    End If
+                Next
+
+                dgvTruthTable.Rows.Add(row)
             Next
         Next
-
-        ' Auto-adjust column widths after data is loaded
-        dgvTruthTable.AutoResizeColumns()
     End Sub
 
-    ''' <summary>
-    ''' Add a single row to the truth table with calculated results
-    ''' </summary>
-    Private Sub AddTruthTableRow(a As Boolean, b As Boolean)
-        Dim row As New DataGridViewRow()
-        row.CreateCells(dgvTruthTable)
-
-        ' Set values with formatting
-        row.Cells(0).Value = FormatBooleanValue(a)
-        row.Cells(1).Value = FormatBooleanValue(b)
-        row.Cells(2).Value = FormatBooleanValue(Not a)
-        row.Cells(3).Value = FormatBooleanValue(a And b)
-        row.Cells(4).Value = FormatBooleanValue(a Or b)
-        row.Cells(5).Value = FormatBooleanValue(a Xor b)
-
-        ' Color code results
-        ColorCodeCell(row.Cells(2), Not a)
-        ColorCodeCell(row.Cells(3), a And b)
-        ColorCodeCell(row.Cells(4), a Or b)
-        ColorCodeCell(row.Cells(5), a Xor b)
-
-        dgvTruthTable.Rows.Add(row)
-    End Sub
-
-    ''' <summary>
-    ''' Format boolean value for display
-    ''' </summary>
-    Private Function FormatBooleanValue(value As Boolean) As String
-        Return If(value, "TRUE", "FALSE")
-    End Function
-
-    ''' <summary>
-    ''' Color code cell based on boolean result
-    ''' </summary>
-    Private Sub ColorCodeCell(cell As DataGridViewCell, result As Boolean)
-        If result Then
-            cell.Style.Font = New Font("Consolas", 10, FontStyle.Bold)
-            cell.Style.ForeColor = Color.DarkGreen
-        Else
-            cell.Style.ForeColor = Color.DarkRed
-        End If
-    End Sub
-
-#End Region
-
-#Region "Interactive Logic Testing"
-
-    ''' <summary>
-    ''' Update interactive results based on checkbox states
-    ''' </summary>
     Private Sub UpdateInteractiveResults()
-        Dim a As Boolean = chkInputA.Checked
-        Dim b As Boolean = chkInputB.Checked
+        Dim a = chkInputA.Checked
+        Dim b = chkInputB.Checked
 
-        ' Calculate all operations
-        Dim notResult As Boolean = Not a
-        Dim andResult As Boolean = a And b
-        Dim orResult As Boolean = a Or b
-        Dim xorResult As Boolean = a Xor b
+        lblResults.Text = $"NOT A={Not a}  AND={a And b}  OR={a Or b}  XOR={a Xor b}"
 
-        ' Update labels with color coding
-        UpdateResultLabel(lblNotResult, "NOT A", notResult)
-        UpdateResultLabel(lblAndResult, "A AND B", andResult)
-        UpdateResultLabel(lblOrResult, "A OR B", orResult)
-        UpdateResultLabel(lblXorResult, "A XOR B", xorResult)
-
-        ' Highlight corresponding row in truth table
-        HighlightMatchingRow(a, b)
-    End Sub
-
-    ''' <summary>
-    ''' Update result label with formatted text and color
-    ''' </summary>
-    Private Sub UpdateResultLabel(label As Label, operation As String, result As Boolean)
-        label.Text = $"{operation} = {FormatBooleanValue(result)}"
-        label.BackColor = If(result, Color.FromArgb(0, 128, 0), Color.FromArgb(128, 0, 0))
-    End Sub
-
-    ''' <summary>
-    ''' Highlight the truth table row matching current interactive values
-    ''' </summary>
-    Private Sub HighlightMatchingRow(a As Boolean, b As Boolean)
         For Each row As DataGridViewRow In dgvTruthTable.Rows
-            Dim rowA As String = row.Cells(0).Value.ToString()
-            Dim rowB As String = row.Cells(1).Value.ToString()
-
-            If rowA = FormatBooleanValue(a) AndAlso rowB = FormatBooleanValue(b) Then
+            Dim match = row.Cells(0).Value.ToString() = If(a, "TRUE", "FALSE") AndAlso
+       row.Cells(1).Value.ToString() = If(b, "TRUE", "FALSE")
+            If match Then
                 dgvTruthTable.ClearSelection()
                 row.Selected = True
-                dgvTruthTable.FirstDisplayedScrollingRowIndex = row.Index
                 Exit For
             End If
         Next
@@ -268,23 +321,19 @@ Public Class TruthTableDemonstration
 
 #Region "Event Handlers"
 
-    Private Sub btnGenerate_Click(sender As Object, e As EventArgs) Handles btnGenerate.Click
-        GenerateTruthTable()
-        MessageBox.Show(
-            "Truth table regenerated successfully!" & Environment.NewLine & Environment.NewLine &
-            "The table shows all possible combinations of two boolean inputs (A and B) " +
-            "and the results of various logical operations.",
-            "Truth Table Generated",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information
-        )
-    End Sub
-
-    Private Sub chkInputA_CheckedChanged(sender As Object, e As EventArgs) Handles chkInputA.CheckedChanged
+    Private Sub CheckBox_Changed(sender As Object, e As EventArgs)
         UpdateInteractiveResults()
     End Sub
 
-    Private Sub chkInputB_CheckedChanged(sender As Object, e As EventArgs) Handles chkInputB.CheckedChanged
+    Private Sub btnGenerate_Click(sender As Object, e As EventArgs)
+        GenerateTruthTable()
+        UpdateInteractiveResults()
+        MessageBox.Show("Truth table regenerated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
+
+    Private Sub btnClear_Click(sender As Object, e As EventArgs)
+        chkInputA.Checked = True
+        chkInputB.Checked = False
         UpdateInteractiveResults()
     End Sub
 

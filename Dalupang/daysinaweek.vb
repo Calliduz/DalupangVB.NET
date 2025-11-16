@@ -1,215 +1,265 @@
-﻿Imports System.Globalization
+﻿Imports System.Drawing
+Imports System.Windows.Forms
+Imports System.Globalization
 
-''' <summary>
-''' Weekly Days Display and Information
-''' Educational demonstration of array operations and date/time concepts
-''' </summary>
 Public Class daysinaweek
     Inherits Form
 
-#Region "Constants"
+#Region "Private Fields"
 
-    Private Const DAYS_PER_WEEK As Integer = 7
-    Private Const WORK_DAYS_PER_WEEK As Integer = 5
-    Private Const WEEKEND_DAYS As Integer = 2
+    Private pnlHeader As Panel
+    Private pnlContent As Panel
+    Private pnlFooter As Panel
+    Private lblTitle As Label
+    Private lblDescription As Label
+    Private txtOutput As TextBox
+    Private btnGenerate As Button
+    Private btnClear As Button
+    Private pnlInstructions As Panel
+
+#End Region
+
+#Region "Constructor"
+
+    Public Sub New()
+        InitializeComponent()
+        Me.Controls.Clear()
+        Me.BackgroundImage = Nothing
+        InitializeEnterpriseUI()
+    End Sub
 
 #End Region
 
 #Region "Form Initialization"
 
     Private Sub daysinaweek_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        InitializeUI()
+        DisplayWelcomeMessage()
     End Sub
 
-    ''' <summary>
-    ''' Configure UI elements for optimal user experience
-    ''' </summary>
-    Private Sub InitializeUI()
-        Me.Text = "Days of the Week - Educational Demonstration"
-        Me.StartPosition = FormStartPosition.CenterScreen
+    Private Sub InitializeEnterpriseUI()
+        Me.BackColor = EnterpriseDesignSystem.LightTheme.Background
+        Me.BackgroundImage = Nothing
 
-        ' Configure ListBox
-        ConfigureListBox()
-
-        ' Configure Generate Button
-        ConfigureButton()
-    End Sub
-
-    ''' <summary>
-    ''' Configure ListBox styling and behavior
-    ''' </summary>
-    Private Sub ConfigureListBox()
-        If ListBox1 IsNot Nothing Then
-            With ListBox1
-                .Font = New Font("Segoe UI", 12, FontStyle.Regular)
-                .BackColor = Color.White
-                .ForeColor = Color.FromArgb(50, 50, 50)
-                .BorderStyle = BorderStyle.FixedSingle
-                .SelectionMode = SelectionMode.One
-                .IntegralHeight = False
-            End With
+        If AppConfiguration.Performance.EnableDoubleBuffering Then
+            Me.DoubleBuffered = True
+            Me.SetStyle(ControlStyles.OptimizedDoubleBuffer Or
+      ControlStyles.AllPaintingInWmPaint Or
+       ControlStyles.UserPaint, True)
         End If
+
+        CreateFooter()
+        CreateButtons()
+        CreateOutputArea()
+        CreateInstructions()
+        CreateHeader()
     End Sub
 
-    ''' <summary>
-    ''' Configure button styling
-    ''' </summary>
-    Private Sub ConfigureButton()
-        If Button1 IsNot Nothing Then
-            With Button1
-                .FlatStyle = FlatStyle.Flat
-                .BackColor = Color.FromArgb(70, 130, 180)
-                .ForeColor = Color.White
-                .Font = New Font("Segoe UI", 11, FontStyle.Bold)
-                .Cursor = Cursors.Hand
-                .Text = "📆 Display All Days"
-            End With
-        End If
+    Private Sub CreateHeader()
+        pnlHeader = New Panel With {
+            .Dock = DockStyle.Top,
+         .Height = 110,
+     .BackColor = EnterpriseDesignSystem.ModuleColors.DataStructures,
+            .Padding = New Padding(24, 20, 24, 20)
+      }
+
+        lblTitle = New Label With {
+        .Text = "📆 Days in a Week",
+        .Font = New Font("Segoe UI", 18, FontStyle.Bold),
+          .ForeColor = Color.White,
+            .AutoSize = True,
+            .Location = New Point(24, 16)
+        }
+
+        lblDescription = New Label With {
+    .Text = "Learn arrays and loops with day-of-week data",
+       .Font = New Font("Segoe UI", 10),
+      .ForeColor = Color.FromArgb(240, 240, 240),
+            .AutoSize = True,
+     .Location = New Point(24, 50)
+  }
+
+        pnlHeader.Controls.AddRange({lblTitle, lblDescription})
+        Me.Controls.Add(pnlHeader)
     End Sub
 
-#End Region
+    Private Sub CreateInstructions()
+        pnlInstructions = New Panel With {
+.Dock = DockStyle.Top,
+          .Height = 130,
+    .BackColor = Color.White,
+   .Padding = New Padding(32, 20, 32, 20)
+   }
 
-#Region "Day Population"
+        Dim lblTitle = New Label With {
+       .Text = "💡 Array & Loop Demonstration",
+         .Font = New Font("Segoe UI", 13, FontStyle.Bold),
+ .ForeColor = Color.FromArgb(45, 55, 72),
+            .AutoSize = True,
+       .Location = New Point(32, 16)
+        }
 
-    ''' <summary>
-    ''' Populate the list with all seven days of the week
-    ''' </summary>
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        ListBox1.Items.Clear()
-        ListBox1.BeginUpdate()
+        Dim lblText = New Label With {
+         .Text = "This demonstrates For Each loops with day-of-week arrays." & vbCrLf &
+         "Click 'Display Days' to see all 7 days with cultural variations and weekend detection.",
+          .Font = New Font("Segoe UI", 10),
+    .ForeColor = Color.FromArgb(100, 116, 139),
+       .AutoSize = False,
+            .Size = New Size(900, 60),
+            .Location = New Point(32, 48)
+        }
 
-        ' Use CultureInfo for proper day names
-        Dim cultureInfo As CultureInfo = CultureInfo.CurrentCulture
-        Dim dateTimeFormat As DateTimeFormatInfo = cultureInfo.DateTimeFormat
-
-        ' Get all day names starting with Sunday (DayOfWeek.Sunday = 0)
-        For dayNumber As Integer = 0 To DAYS_PER_WEEK - 1
-            Dim dayOfWeek As DayOfWeek = CType(dayNumber, DayOfWeek)
-            Dim dayName As String = dateTimeFormat.GetDayName(dayOfWeek)
-            Dim dayType As String = GetDayType(dayOfWeek)
-            Dim emoji As String = GetDayEmoji(dayOfWeek)
-
-            ' Format: "🌅 Sunday (Weekend)"
-            Dim displayText As String = $"{emoji} {dayName} ({dayType})"
-            ListBox1.Items.Add(displayText)
-        Next
-
-        ListBox1.EndUpdate()
-
-        ' Show success message
-        MessageBox.Show(
-         $"All {DAYS_PER_WEEK} days of the week have been loaded.{Environment.NewLine}{Environment.NewLine}" &
-  $"• Weekdays: {WORK_DAYS_PER_WEEK} (Monday-Friday){Environment.NewLine}" &
-              $"• Weekend: {WEEKEND_DAYS} (Saturday-Sunday){Environment.NewLine}{Environment.NewLine}" &
-    "Select any day to view more information.",
-   "Days Loaded Successfully",
-         MessageBoxButtons.OK,
-              MessageBoxIcon.Information
-          )
+        pnlInstructions.Controls.AddRange({lblTitle, lblText})
+        Me.Controls.Add(pnlInstructions)
     End Sub
 
-    ''' <summary>
-    ''' Get day type classification (Weekday/Weekend)
-    ''' </summary>
-    Private Function GetDayType(day As DayOfWeek) As String
-        Select Case day
-            Case DayOfWeek.Saturday, DayOfWeek.Sunday
-                Return "Weekend"
-            Case Else
-                Return "Weekday"
-        End Select
-    End Function
+    Private Sub CreateOutputArea()
+        pnlContent = New Panel With {
+       .Dock = DockStyle.Fill,
+            .BackColor = EnterpriseDesignSystem.LightTheme.Background,
+    .Padding = New Padding(32, 24, 32, 24)
+        }
 
-    ''' <summary>
-    ''' Get emoji representation for each day
-    ''' </summary>
-    Private Function GetDayEmoji(day As DayOfWeek) As String
-        Select Case day
-            Case DayOfWeek.Sunday
-                Return "🌅" ' Sunrise
-            Case DayOfWeek.Monday
-                Return "💼" ' Briefcase
-            Case DayOfWeek.Tuesday
-                Return "📊" ' Chart
-            Case DayOfWeek.Wednesday
-                Return "🐫" ' Camel (hump day)
-            Case DayOfWeek.Thursday
-                Return "⚡" ' Lightning
-            Case DayOfWeek.Friday
-                Return "🎉" ' Party
-            Case DayOfWeek.Saturday
-                Return "🌴" ' Palm tree
-            Case Else
-                Return "📅"
-        End Select
-    End Function
+        txtOutput = New TextBox With {
+              .Multiline = True,
+             .ScrollBars = ScrollBars.Vertical,
+                  .ReadOnly = True,
+         .Dock = DockStyle.Fill,
+                  .Font = New Font("Consolas", 10),
+              .BackColor = Color.White,
+                  .ForeColor = Color.FromArgb(45, 55, 72),
+           .BorderStyle = BorderStyle.FixedSingle,
+       .Padding = New Padding(16)
+              }
+
+        pnlContent.Controls.Add(txtOutput)
+        Me.Controls.Add(pnlContent)
+    End Sub
+
+    Private Sub CreateButtons()
+        Dim pnlButtons = New Panel With {
+        .Dock = DockStyle.Bottom,
+            .Height = 80,
+       .BackColor = Color.White,
+     .Padding = New Padding(32, 16, 32, 16)
+}
+
+        btnGenerate = New Button With {
+          .Text = "📆 Display Days",
+   .Size = New Size(180, 40),
+    .Location = New Point(32, 16),
+            .FlatStyle = FlatStyle.Flat,
+            .BackColor = Color.FromArgb(34, 197, 94),
+  .ForeColor = Color.White,
+            .Font = New Font("Segoe UI", 10, FontStyle.Bold),
+            .Cursor = Cursors.Hand
+      }
+        btnGenerate.FlatAppearance.BorderSize = 0
+
+        btnClear = New Button With {
+        .Text = "🗑️ Clear",
+    .Size = New Size(120, 40),
+            .Location = New Point(224, 16),
+            .FlatStyle = FlatStyle.Flat,
+  .BackColor = Color.FromArgb(251, 191, 36),
+     .ForeColor = Color.White,
+        .Font = New Font("Segoe UI", 10, FontStyle.Bold),
+            .Cursor = Cursors.Hand
+     }
+        btnClear.FlatAppearance.BorderSize = 0
+
+        AddHandler btnGenerate.Click, AddressOf Button1_Click
+        AddHandler btnClear.Click, AddressOf btnClear_Click
+
+        pnlButtons.Controls.AddRange({btnGenerate, btnClear})
+        Me.Controls.Add(pnlButtons)
+    End Sub
+
+    Private Sub CreateFooter()
+        pnlFooter = New Panel With {
+  .Dock = DockStyle.Bottom,
+         .Height = 36,
+.BackColor = EnterpriseDesignSystem.ModuleColors.DataStructures
+        }
+
+        Dim lblFooter = New Label With {
+  .Text = "Enterprise Learning Platform  |  Data Structures Module",
+            .Font = New Font("Segoe UI", 8),
+    .ForeColor = Color.FromArgb(220, 220, 220),
+  .Dock = DockStyle.Fill,
+            .TextAlign = ContentAlignment.MiddleCenter
+ }
+
+        pnlFooter.Controls.Add(lblFooter)
+        Me.Controls.Add(pnlFooter)
+    End Sub
 
 #End Region
 
 #Region "Event Handlers"
 
-    ''' <summary>
-    ''' Handle day selection to show details
-    ''' </summary>
-    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
-        If ListBox1.SelectedIndex >= 0 Then
-            Dim selectedDay As DayOfWeek = CType(ListBox1.SelectedIndex, DayOfWeek)
-            ShowDayDetails(selectedDay)
-        End If
+    Private Sub DisplayWelcomeMessage()
+        txtOutput.Text = "═══════════════════════════════════════════════════════════════" & vbCrLf &
+               "  DAYS IN A WEEK" & vbCrLf &
+       "═══════════════════════════════════════════════════════════════" & vbCrLf & vbCrLf &
+            "Welcome! This demonstrates For Each loops and day-of-week" & vbCrLf &
+        "arrays in VB.NET." & vbCrLf & vbCrLf &
+         "Click 'Display Days' to see:" & vbCrLf &
+       "• All 7 days of the week" & vbCrLf &
+         "• Weekend vs Weekday classification" & vbCrLf &
+        "• Day numbers and abbreviations" & vbCrLf &
+          "• Cultural day name variations" & vbCrLf & vbCrLf &
+             $"Today: {DateTime.Now:dddd, MMMM d, yyyy}" & vbCrLf & vbCrLf &
+     "═══════════════════════════════════════════════════════════════"
     End Sub
 
-    ''' <summary>
-    ''' Display detailed information about selected day
-    ''' </summary>
-    Private Sub ShowDayDetails(day As DayOfWeek)
-        Dim dayName As String = CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(day)
-        Dim dayType As String = GetDayType(day)
-        Dim isWeekend As Boolean = (day = DayOfWeek.Saturday OrElse day = DayOfWeek.Sunday)
-        Dim dayNumber As Integer = CInt(day) + 1
+    Private Sub Button1_Click(sender As Object, e As EventArgs)
+        Try
+            Dim output As New System.Text.StringBuilder()
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+            output.AppendLine("📆 DAYS OF THE WEEK")
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+            output.AppendLine()
 
-        ' Get next occurrence of this day
-        Dim today As Date = Date.Today
-        Dim daysUntil As Integer = (CInt(day) - CInt(today.DayOfWeek) + 7) Mod 7
-        Dim nextOccurrence As Date = today.AddDays(daysUntil)
+            Dim cultureInfo As CultureInfo = CultureInfo.CurrentCulture
+            Dim dateTimeFormat As DateTimeFormatInfo = cultureInfo.DateTimeFormat
 
-        Dim details As String = $"📆 {dayName} Details{Environment.NewLine}" &
-    $"━━━━━━━━━━━━━━━━━━━━━{Environment.NewLine}" &
-            $"Day Number: {dayNumber} of {DAYS_PER_WEEK}{Environment.NewLine}" &
-    $"Type: {dayType}{Environment.NewLine}" &
-$"Weekend: {If(isWeekend, "Yes ✓", "No ✗")}{Environment.NewLine}" &
-$"Next {dayName}: {nextOccurrence:MMMM d, yyyy}{Environment.NewLine}" &
-      $"Days Until: {If(daysUntil = 0, "Today!", $"{daysUntil} days")}{Environment.NewLine}" &
- GetDayFact(day)
+            For dayNum As Integer = 0 To 6
+                Dim dayOfWeek As DayOfWeek = CType(dayNum, DayOfWeek)
+                Dim fullName As String = dateTimeFormat.GetDayName(dayOfWeek)
+                Dim shortName As String = dateTimeFormat.GetAbbreviatedDayName(dayOfWeek)
+                Dim isWeekend As Boolean = (dayOfWeek = DayOfWeek.Saturday OrElse dayOfWeek = DayOfWeek.Sunday)
+                Dim dayType As String = If(isWeekend, "Weekend 🎉", "Weekday 💼")
 
-        MessageBox.Show(details, $"{dayName} Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                output.AppendLine($"{dayNum + 1}. {fullName} ({shortName})")
+                output.AppendLine($"     Type: {dayType}")
+                output.AppendLine($"     DayOfWeek Value: {CInt(dayOfWeek)}")
+                output.AppendLine()
+            Next
+
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+            output.AppendLine("CURRENT DAY INFORMATION")
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+            Dim today As DateTime = DateTime.Now
+            output.AppendLine($"Today: {today:dddd, MMMM d, yyyy}")
+            output.AppendLine($"Day of Week: {today.DayOfWeek}")
+            output.AppendLine($"Day of Year: {today.DayOfYear}")
+            output.AppendLine($"Week of Year: {GetWeekOfYear(today)}")
+            output.AppendLine()
+            output.AppendLine("═══════════════════════════════════════════════════════════════")
+
+            txtOutput.Text = output.ToString()
+        Catch ex As Exception
+            MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
-#End Region
+    Private Sub btnClear_Click(sender As Object, e As EventArgs)
+        DisplayWelcomeMessage()
+    End Sub
 
-#Region "Helper Methods"
-
-    ''' <summary>
-    ''' Get an interesting fact about the day
-    ''' </summary>
-    Private Function GetDayFact(day As DayOfWeek) As String
-        Select Case day
-            Case DayOfWeek.Sunday
-                Return $"{Environment.NewLine}💡 Fun Fact: Named after the Sun"
-            Case DayOfWeek.Monday
-                Return $"{Environment.NewLine}💡 Fun Fact: Named after the Moon"
-            Case DayOfWeek.Tuesday
-                Return $"{Environment.NewLine}💡 Fun Fact: Named after Tiw (Norse god of war)"
-            Case DayOfWeek.Wednesday
-                Return $"{Environment.NewLine}💡 Fun Fact: Also called 'Hump Day' (middle of work week)"
-            Case DayOfWeek.Thursday
-                Return $"{Environment.NewLine}💡 Fun Fact: Named after Thor (Norse god of thunder)"
-            Case DayOfWeek.Friday
-                Return $"{Environment.NewLine}💡 Fun Fact: Named after Freya (Norse goddess of love)"
-            Case DayOfWeek.Saturday
-                Return $"{Environment.NewLine}💡 Fun Fact: Named after Saturn (Roman god)"
-            Case Else
-                Return ""
-        End Select
+    Private Function GetWeekOfYear(dateValue As DateTime) As Integer
+        Dim calendar As Calendar = CultureInfo.CurrentCulture.Calendar
+        Return calendar.GetWeekOfYear(dateValue, CalendarWeekRule.FirstDay, DayOfWeek.Sunday)
     End Function
 
 #End Region

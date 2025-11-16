@@ -26,6 +26,12 @@ Public Class Polymorphism
 
     Public Sub New()
         InitializeComponent()
+
+        ' CRITICAL: Clear any designer-created controls immediately
+        Me.Controls.Clear()
+        Me.BackgroundImage = Nothing
+
+        ' Now build the enterprise UI
         InitializeEnterpriseUI()
     End Sub
 
@@ -41,47 +47,46 @@ Public Class Polymorphism
         ' Apply enterprise design system
         Me.BackColor = EnterpriseDesignSystem.LightTheme.Background
         Me.Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body)
+        Me.BackgroundImage = Nothing ' Force remove background
 
         ' Enable performance optimizations
         If AppConfiguration.Performance.EnableDoubleBuffering Then
             Me.DoubleBuffered = True
             Me.SetStyle(ControlStyles.OptimizedDoubleBuffer Or
-               ControlStyles.AllPaintingInWmPaint Or
-             ControlStyles.UserPaint, True)
+         ControlStyles.AllPaintingInWmPaint Or
+     ControlStyles.UserPaint, True)
         End If
 
-        CreateHeader()
-        CreateInstructions()
-        CreateOutputArea()
-        CreateButtons()
-        CreateFooter()
+        ' CRITICAL: Add panels in reverse dock order (bottom-to-top)
+        CreateFooter()    ' Add footer first (bottom)
+        CreateButtons()      ' Then buttons (bottom)
+        CreateOutputArea()   ' Then content (fill)
+        CreateInstructions() ' Then instructions (top)
+        CreateHeader()       ' Finally header (top)
     End Sub
 
     Private Sub CreateHeader()
-        ' Header panel
         pnlHeader = New Panel With {
-               .Dock = DockStyle.Top,
-               .Height = 100,
-             .BackColor = EnterpriseDesignSystem.ModuleColors.OOP,
-               .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.Large)
-           }
+          .Dock = DockStyle.Top,
+            .Height = 110,
+            .BackColor = EnterpriseDesignSystem.ModuleColors.OOP,
+.Padding = New Padding(24, 20, 24, 20)
+        }
 
-        ' Title label
         lblTitle = New Label With {
     .Text = "🔄 Polymorphism Demonstration",
-      .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Hero, FontStyle.Bold),
-        .ForeColor = EnterpriseDesignSystem.NeutralColors.White,
-            .AutoSize = True,
-            .Location = New Point(EnterpriseDesignSystem.Spacing.Large, EnterpriseDesignSystem.Spacing.Large)
-      }
+  .Font = New Font("Segoe UI", 18, FontStyle.Bold),
+ .ForeColor = Color.White,
+       .AutoSize = True,
+            .Location = New Point(24, 16)
+        }
 
-        ' Description label
         lblDescription = New Label With {
-        .Text = "Learn how objects of different types respond to the same method calls",
-   .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
-        .ForeColor = ColorHelper.Lighten(EnterpriseDesignSystem.NeutralColors.White, 0.2),
+    .Text = "Learn how objects of different types respond to the same method calls",
+     .Font = New Font("Segoe UI", 10),
+ .ForeColor = Color.FromArgb(240, 240, 240),
             .AutoSize = True,
-     .Location = New Point(EnterpriseDesignSystem.Spacing.Large, 55)
+     .Location = New Point(24, 50)
         }
 
         pnlHeader.Controls.AddRange({lblTitle, lblDescription})
@@ -89,109 +94,93 @@ Public Class Polymorphism
     End Sub
 
     Private Sub CreateInstructions()
-        ' Instructions panel with proper spacing
         pnlInstructions = New Panel With {
-              .Dock = DockStyle.Top,
-     .Height = 150,
-           .BackColor = EnterpriseDesignSystem.LightTheme.Surface,
-              .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
-          }
+            .Dock = DockStyle.Top,
+            .Height = 150,
+      .BackColor = Color.White,
+            .Padding = New Padding(32, 24, 32, 24)
+        }
 
-        Dim lblInstructionsTitle = New Label With {
-        .Text = "💡 What is Polymorphism?",
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.H3, FontStyle.Bold),
-    .ForeColor = EnterpriseDesignSystem.LightTheme.TextPrimary,
-     .Dock = DockStyle.Top,
-    .Height = 30
- }
+        Dim lblTitle = New Label With {
+            .Text = "💡 What is Polymorphism?",
+    .Font = New Font("Segoe UI", 13, FontStyle.Bold),
+            .ForeColor = Color.FromArgb(45, 55, 72),
+       .AutoSize = True,
+       .Location = New Point(32, 20)
+        }
 
-        Dim lblInstructionsText = New Label With {
-                 .Text = "Polymorphism allows objects of different types to be treated through a common base type." & vbCrLf & vbCrLf &
-                   "Example: Call Speak() on an Animal reference that points to Dog, Cat, or Bird objects." & vbCrLf &
-                   "Each type responds differently, demonstrating polymorphic behavior.",
-                 .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body),
-                 .ForeColor = EnterpriseDesignSystem.LightTheme.TextSecondary,
-           .Dock = DockStyle.Fill,
-                 .AutoSize = False
-           }
+        Dim lblText = New Label With {
+.Text = "Polymorphism allows objects of different types to be treated through a common base type." & vbCrLf & vbCrLf &
+    "Example: Call Speak() on an Animal reference pointing to Dog, Cat, or Bird objects.",
+    .Font = New Font("Segoe UI", 10),
+            .ForeColor = Color.FromArgb(100, 116, 139),
+            .AutoSize = False,
+            .Size = New Size(900, 80),
+            .Location = New Point(32, 52)
+        }
 
-        pnlInstructions.Controls.AddRange({lblInstructionsText, lblInstructionsTitle})
+        pnlInstructions.Controls.AddRange({lblTitle, lblText})
         Me.Controls.Add(pnlInstructions)
     End Sub
 
     Private Sub CreateOutputArea()
-        ' Content panel
         pnlContent = New Panel With {
-      .Dock = DockStyle.Fill,
-            .BackColor = EnterpriseDesignSystem.LightTheme.Background,
-            .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
- }
-
-        ' Output text box with professional styling
-        txtOutput = New TextBox With {
-.Multiline = True,
-            .ScrollBars = ScrollBars.Vertical,
-       .ReadOnly = True,
-       .Dock = DockStyle.Fill,
-        .Font = EnterpriseDesignSystem.CreateMonospaceFont(EnterpriseDesignSystem.FontSizes.Body),
-            .BackColor = EnterpriseDesignSystem.LightTheme.Surface,
-  .ForeColor = EnterpriseDesignSystem.LightTheme.TextPrimary,
-     .BorderStyle = BorderStyle.None,
-  .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.Large)
+            .Dock = DockStyle.Fill,
+          .BackColor = EnterpriseDesignSystem.LightTheme.Background,
+            .Padding = New Padding(32, 24, 32, 24)
         }
 
-        ' Add subtle border effect using a panel
-        Dim pnlTextBoxBorder = New Panel With {
-                   .Dock = DockStyle.Fill,
-                   .BackColor = EnterpriseDesignSystem.LightTheme.Border,
-                   .Padding = New Padding(1)
-               }
-        pnlTextBoxBorder.Controls.Add(txtOutput)
+        txtOutput = New TextBox With {
+  .Multiline = True,
+      .ScrollBars = ScrollBars.Vertical,
+            .ReadOnly = True,
+      .Dock = DockStyle.Fill,
+        .Font = New Font("Consolas", 10),
+.BackColor = Color.White,
+      .ForeColor = Color.FromArgb(45, 55, 72),
+            .BorderStyle = BorderStyle.FixedSingle,
+     .Padding = New Padding(16)
+     }
 
-        pnlContent.Controls.Add(pnlTextBoxBorder)
+        pnlContent.Controls.Add(txtOutput)
         Me.Controls.Add(pnlContent)
     End Sub
 
     Private Sub CreateButtons()
-        ' Button panel
         Dim pnlButtons = New Panel With {
        .Dock = DockStyle.Bottom,
-            .Height = EnterpriseDesignSystem.ControlSizes.ButtonMedium.Height + (EnterpriseDesignSystem.Spacing.XLarge * 2),
-    .BackColor = EnterpriseDesignSystem.LightTheme.Surface,
-      .Padding = EnterpriseDesignSystem.CreatePadding(EnterpriseDesignSystem.Spacing.XLarge)
+          .Height = 80,
+     .BackColor = Color.White,
+            .Padding = New Padding(32, 16, 32, 16)
         }
 
-        ' Run button
         btnRun = New Button With {
-        .Text = "▶️ Run Demonstration",
-      .Size = New Size(200, EnterpriseDesignSystem.ControlSizes.ButtonMedium.Height),
-              .Location = New Point(EnterpriseDesignSystem.Spacing.XLarge, EnterpriseDesignSystem.Spacing.Large),
-              .FlatStyle = FlatStyle.Flat,
-         .BackColor = EnterpriseDesignSystem.SemanticColors.Success,
-    .ForeColor = EnterpriseDesignSystem.NeutralColors.White,
-         .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body, FontStyle.Bold),
-              .Cursor = Cursors.Hand
-       }
+     .Text = "▶️ Run Demonstration",
+            .Size = New Size(180, 40),
+    .Location = New Point(32, 16),
+      .FlatStyle = FlatStyle.Flat,
+   .BackColor = Color.FromArgb(34, 197, 94),
+  .ForeColor = Color.White,
+        .Font = New Font("Segoe UI", 10, FontStyle.Bold),
+     .Cursor = Cursors.Hand
+        }
         btnRun.FlatAppearance.BorderSize = 0
 
-        ' Clear button
         btnClear = New Button With {
-    .Text = "🗑️ Clear Output",
-          .Size = New Size(150, EnterpriseDesignSystem.ControlSizes.ButtonMedium.Height),
-        .Location = New Point(btnRun.Right + EnterpriseDesignSystem.Spacing.Medium, EnterpriseDesignSystem.Spacing.Large),
- .FlatStyle = FlatStyle.Flat,
-            .BackColor = EnterpriseDesignSystem.SemanticColors.Warning,
-        .ForeColor = EnterpriseDesignSystem.NeutralColors.White,
-            .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Body, FontStyle.Bold),
-            .Cursor = Cursors.Hand
-        }
+            .Text = "🗑️ Clear",
+   .Size = New Size(120, 40),
+            .Location = New Point(224, 16),
+   .FlatStyle = FlatStyle.Flat,
+       .BackColor = Color.FromArgb(251, 191, 36),
+ .ForeColor = Color.White,
+  .Font = New Font("Segoe UI", 10, FontStyle.Bold),
+        .Cursor = Cursors.Hand
+   }
         btnClear.FlatAppearance.BorderSize = 0
 
-        ' Add hover effects
-        AddButtonHoverEffect(btnRun, EnterpriseDesignSystem.SemanticColors.Success)
-        AddButtonHoverEffect(btnClear, EnterpriseDesignSystem.SemanticColors.Warning)
+        AddButtonHoverEffect(btnRun, Color.FromArgb(34, 197, 94))
+        AddButtonHoverEffect(btnClear, Color.FromArgb(251, 191, 36))
 
-        ' Wire up events
         AddHandler btnRun.Click, AddressOf RunDemo_Click
         AddHandler btnClear.Click, AddressOf ClearOutput_Click
 
@@ -201,18 +190,18 @@ Public Class Polymorphism
 
     Private Sub CreateFooter()
         pnlFooter = New Panel With {
-      .Dock = DockStyle.Bottom,
-   .Height = 40,
-     .BackColor = EnterpriseDesignSystem.ModuleColors.OOP
-           }
+            .Dock = DockStyle.Bottom,
+      .Height = 36,
+  .BackColor = EnterpriseDesignSystem.ModuleColors.OOP
+     }
 
         Dim lblFooter = New Label With {
-            .Text = "Enterprise Learning Platform | Object-Oriented Programming Module",
-   .Font = EnterpriseDesignSystem.CreateFont(EnterpriseDesignSystem.FontSizes.Caption),
-.ForeColor = ColorHelper.Lighten(EnterpriseDesignSystem.NeutralColors.White, 0.2),
+   .Text = "Enterprise Learning Platform  |  Object-Oriented Programming Module",
+.Font = New Font("Segoe UI", 8),
+          .ForeColor = Color.FromArgb(220, 220, 220),
       .Dock = DockStyle.Fill,
-.TextAlign = ContentAlignment.MiddleCenter
-    }
+    .TextAlign = ContentAlignment.MiddleCenter
+        }
 
         pnlFooter.Controls.Add(lblFooter)
         Me.Controls.Add(pnlFooter)
@@ -233,16 +222,16 @@ Public Class Polymorphism
 
     Private Sub DisplayWelcomeMessage()
         txtOutput.Text = "═══════════════════════════════════════════════════════════════" & vbCrLf &
-    "  POLYMORPHISM DEMONSTRATION" & vbCrLf &
-         "═══════════════════════════════════════════════════════════════" & vbCrLf & vbCrLf &
-     "Welcome! This demonstration shows how polymorphism works in" & vbCrLf &
-    "object-oriented programming." & vbCrLf & vbCrLf &
-              "Key Concepts:" & vbCrLf &
-   "• Same method name, different implementations" & vbCrLf &
-      "• Base class reference, derived class objects" & vbCrLf &
-            "• Runtime method selection" & vbCrLf & vbCrLf &
-     "Click 'Run Demonstration' to see polymorphism in action!" & vbCrLf & vbCrLf &
-   "═══════════════════════════════════════════════════════════════"
+              "  POLYMORPHISM DEMONSTRATION" & vbCrLf &
+           "═══════════════════════════════════════════════════════════════" & vbCrLf & vbCrLf &
+           "Welcome! This demonstration shows how polymorphism works in" & vbCrLf &
+         "object-oriented programming." & vbCrLf & vbCrLf &
+                 "Key Concepts:" & vbCrLf &
+    "• Same method name, different implementations" & vbCrLf &
+    "• Base class reference, derived class objects" & vbCrLf &
+         "• Runtime method selection" & vbCrLf & vbCrLf &
+        "Click 'Run Demonstration' to see polymorphism in action!" & vbCrLf & vbCrLf &
+        "═══════════════════════════════════════════════════════════════"
     End Sub
 
     Private Sub RunDemo_Click(sender As Object, e As EventArgs)
@@ -283,7 +272,7 @@ Public Class Polymorphism
             output.AppendLine("   Calling: animal.Speak()")
             output.AppendLine($"   🐱 Result: {animal.Speak()}")
             output.AppendLine()
-            output.AppendLine("   Calling: animal.Eat()")
+            output.AppendLine("Calling: animal.Eat()")
             output.AppendLine($"   🐟 Result: {animal.Eat()}")
             output.AppendLine()
 
@@ -329,7 +318,7 @@ Public Class Polymorphism
                 Debug.WriteLine($"[{DateTime.Now}] Polymorphism error: {ex.Message}")
             End If
             MessageBox.Show($"An error occurred: {ex.Message}", "Error",
-          MessageBoxButtons.OK, MessageBoxIcon.Error)
+             MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
